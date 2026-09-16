@@ -1,7 +1,7 @@
 package com.example.employee_curd.controller;
 
-import com.example.employee_curd.entity.Employee;
-import com.example.employee_curd.repository.EmployeeRepository;
+import com.example.employee_curd.dto.EmployeeDTO;
+import com.example.employee_curd.service.EmployeeService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,51 +10,41 @@ import java.util.List;
 @RequestMapping("/api/employees")
 public class EmployeeController {
 
-    private final EmployeeRepository employeeRepository;
+    private final EmployeeService employeeService;
 
-    public EmployeeController(EmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
+    public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
     }
 
     @GetMapping
-    public List<Employee> getAllEmployees() {
-        return employeeRepository.findAll();
-    }
-
-    @PostMapping
-    public Employee createEmployee(@RequestBody Employee employee) {
-        return employeeRepository.save(employee);
+    public List<EmployeeDTO> getAllEmployees() {
+        return employeeService.getAllEmployees();
     }
 
     @GetMapping("/{id}")
-    public Employee getEmployeeById(@PathVariable Long id) {
-        return employeeRepository.findById(id).orElse(null);
+    public EmployeeDTO getEmployeeById(@PathVariable Long id) {
+        return employeeService.getEmployeeById(id);
+    }
+
+    @PostMapping
+    public EmployeeDTO createEmployee(
+            @RequestBody EmployeeDTO employeeDTO) {
+
+        return employeeService.createEmployee(employeeDTO);
     }
 
     @PutMapping("/{id}")
-    public Employee updateEmployee(
+    public EmployeeDTO updateEmployee(
             @PathVariable Long id,
-            @RequestBody Employee employee) {
+            @RequestBody EmployeeDTO employeeDTO) {
 
-        Employee existingEmployee =
-                employeeRepository.findById(id).orElse(null);
-
-        if (existingEmployee == null) {
-            return null;
-        }
-
-        existingEmployee.setName(employee.getName());
-        existingEmployee.setEmail(employee.getEmail());
-        existingEmployee.setDepartment(employee.getDepartment());
-        existingEmployee.setSalary(employee.getSalary());
-
-        return employeeRepository.save(existingEmployee);
+        return employeeService.updateEmployee(id, employeeDTO);
     }
 
     @DeleteMapping("/{id}")
     public String deleteEmployee(@PathVariable Long id) {
 
-        employeeRepository.deleteById(id);
+        employeeService.deleteEmployee(id);
 
         return "Employee deleted successfully";
     }
