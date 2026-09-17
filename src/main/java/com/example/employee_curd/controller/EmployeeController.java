@@ -2,6 +2,7 @@ package com.example.employee_curd.controller;
 
 import com.example.employee_curd.dto.EmployeeDTO;
 import com.example.employee_curd.service.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,16 +28,13 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public EmployeeDTO createEmployee(
-            @RequestBody EmployeeDTO employeeDTO) {
+    public EmployeeDTO createEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) {
 
         return employeeService.createEmployee(employeeDTO);
     }
 
     @PutMapping("/{id}")
-    public EmployeeDTO updateEmployee(
-            @PathVariable Long id,
-            @RequestBody EmployeeDTO employeeDTO) {
+    public EmployeeDTO updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeDTO employeeDTO) {
 
         return employeeService.updateEmployee(id, employeeDTO);
     }

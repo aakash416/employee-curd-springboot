@@ -2,6 +2,7 @@ package com.example.employee_curd.service;
 
 import com.example.employee_curd.dto.EmployeeDTO;
 import com.example.employee_curd.entity.Employee;
+import com.example.employee_curd.exception.ResourceNotFoundException;
 import com.example.employee_curd.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
 
@@ -27,16 +28,15 @@ public class EmployeeService {
 
     // GET BY ID
     public EmployeeDTO getEmployeeById(Long id) {
-
         Employee employee =
-                employeeRepository.findById(id).orElse(null);
-
-        if (employee == null) {
-            return null;
-        }
-
+                employeeRepository.findById(id).orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Employee not found with id: " + id
+                        )
+                );
         return convertToDTO(employee);
     }
+
 
     // CREATE
     public EmployeeDTO createEmployee(EmployeeDTO employeeDTO) {
